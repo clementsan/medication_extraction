@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "medication-extraction"
+version = "0.1"
+dependencies = [
+  "mistralai>=1.8.2",
+  "typer>=0.16.0",
+  "requests>=2.32.4",
+  "python-dotenv>=1.1.0",
+  "pydantic>=2.11.7",
+]
+requires-python = ">=3.11"
+authors = [
+  {name = "Clement Vachet", email = ""},
+]
+maintainers = [
+  {name = "Clement Vachet", email = ""},
+]
+description = "Data extraction from medical records"
+readme = "README.md"
+keywords = ["OCR", "LLM", "Medical Reports"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+dev = [
+  "black>=25.1.0",
+  "pylint>=3.3.6",
+]
+test = [
+  "pytest>=8.3.5",
+]
+
+[project.scripts]
+medication-extraction = "medication_extraction.main:app"
