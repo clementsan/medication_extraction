@@ -1,0 +1,5 @@
+mistralai
+python-dotenv
+requests
+typer
+pydantic
