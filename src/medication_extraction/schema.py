@@ -1,0 +1,74 @@
+"""
+Schema module - data schema
+"""
+
+from typing import List, Dict, Any
+from pydantic import BaseModel, Field
+
+
+class MedicationItem(BaseModel):
+    """Medication item class"""
+
+    medication: str = Field(
+        description="Medication administered, medication at discharge",
+        example="Medication",
+    )
+    dosage: str = Field(
+        description="Dosage and frequency combined (no route)",
+        example="1mg daily",
+    )
+    # Warning: define validated as string (to avoid LLM issues)
+    validated: str = "None"
+    additional_information: dict = Field(
+        description="Supplementary data about the medication, when available (e.g. route)",
+        examples=[{"route": "PO"}, {}],
+    )
+
+
+class PatientInfo(BaseModel):
+    """Patient Info class"""
+
+    name: str = Field(description="Patient Name")
+    dob: str = Field(description="Patient Date of Birth")
+    age: int = Field(description="Patient age in years")
+    gender: str = Field(description="Patient gender")
+    mrn: str = Field(description="Patient MRN (Medical Record Number)")
+    admission_date: str = Field(description="Date of Admission")
+    discharge_date: str = Field(description="Date of Discharge")
+
+
+class MedicalReport(BaseModel):
+    """Medical report class"""
+
+    patient_info: PatientInfo
+    medications: List[MedicationItem]
+
+
+def convert_json_to_md(json_object: Dict[str, Any]) -> str:
+    """Convert json object to Markdown format"""
+    patient_info = json_object["patient_info"]
+    markdown_output = "## Patient Information\n"
+    markdown_output += f"- **Name**: {patient_info['name']}\n\n"
+    markdown_output += f"- **DOB**: {patient_info['dob']}\n\n"
+    markdown_output += f"- **Age**: {patient_info['age']}\n\n"
+    markdown_output += f"- **Gender**: {patient_info['gender']}\n\n"
+    markdown_output += f"- **MRN**: {patient_info['mrn']}\n\n"
+    markdown_output += (
+        f"- **Date of Administration**: {patient_info['admission_date']}\n\n"
+    )
+    markdown_output += f"- **Date of Discharge**: {patient_info['discharge_date']}\n\n"
+
+    medication_list = json_object["medications"]
+    markdown_output += "### Extracted Medications and Dosages\n\n"
+    for _, item in enumerate(medication_list):
+        markdown_output += f"- **Medication**: {item['medication']}\n\n"
+        markdown_output += f"  **Dosage**: {item['dosage']}\n\n"
+        markdown_output += f"  **Validated**: {item['validated']}\n\n"
+        dict_info = item["additional_information"]
+        if len(dict_info) == 0:
+            markdown_output += "  **Additional Information**: None\n\n"
+        else:
+            markdown_output += "  **Additional Information**:\n\n"
+            for key, value in dict_info.items():
+                markdown_output += f"  - **{key.capitalize()}**: {value}\n\n"
+    return markdown_output
