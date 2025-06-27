@@ -26,17 +26,17 @@ class MedicalDataExtractor:
         self,
         input_pdf: str,
         output_dir: str,
-        qc_ocr: bool,
-        direct_qna: bool,
         ocr_model: str,
         text_model: str,
+        qc_ocr: bool = False,
+        direct_qna: bool = False,
     ):
         self.input_pdf = input_pdf
         self.output_dir = output_dir
-        self.qc_ocr = qc_ocr
-        self.direct_qna = direct_qna
         self.ocr_model = ocr_model
         self.text_model = text_model
+        self.qc_ocr = qc_ocr
+        self.direct_qna = direct_qna
         self.client = self.define_mistral_client()
         self.output_ocr_file, self.output_json_file, self.output_md_file = (
             self.define_output_files()
