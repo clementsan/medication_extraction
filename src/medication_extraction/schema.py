@@ -10,9 +10,9 @@ class MedicationItem(BaseModel):
     """Medication item class"""
 
     medication: str = Field(
-        # description="Medication administered, medication at discharge",
-        description="Medication name",
-        example="Medication",
+        description="Medication administered, medication at discharge",
+        # description="Medication name",
+        examples=["Medication", "Lisinopril"],
     )
     # Combined administration instructions
     # dosage: str = Field(
@@ -22,11 +22,12 @@ class MedicationItem(BaseModel):
     dosage: str = "None"
     dosage_info: str = Field(
         description="Dosage (no frequency, no route)",
-        example="1mg",
+        # description="Dosage",
+        examples=["1mg", "10mg"],
     )
     frequency_info: str = Field(
         description="Frequency",
-        example="daily",
+        example="Daily",
     )
     # Warning: define validated as string (to avoid LLM issues)
     validated: str = "None"
