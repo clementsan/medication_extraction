@@ -48,9 +48,18 @@ Example via poetry:
 ---
 ## Usage
 
-**WARNING:** "MISTRAL_API_KEY" needs to be set in your environment, in order to run Mistal OCR and LLM models.
+**WARNING:** `MISTRAL_API_KEY` needs to be set in your environment, in order to run Mistal OCR and LLM models.
 
-This application requires a PDF file as input, and generates 2 output files: a Markdown file and a JSON file.
+Application arguments:
+ - `input_pdf`: PDF file with medical information
+ - `output-dir`: Output folder (where JSON and Markdown files are saved)
+
+Application options:
+ - `qc-ocr`: Save OCR output in Markdown file 
+ - `direct-qna`: Use direct Question&Answer step (OCR + LLM)
+ - `ocr-model`: Select OCR model (Mistral OCR)
+ - `text-model`: Select LLM text model (Mistral LLM models)
+
 
 Example command line via python file:
 > python src/medication_extraction/main.py --input_pdf <pdf_file> --output-dir <output_dir>
@@ -61,6 +70,11 @@ Example command line after local installation:
 Example command line with quality control on OCR (saving OCR output file):
 > medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --qc-ocr
 
+Example command line with direct Question&Answer (OCR + LLM combined):
+> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --direct-qna
+
+Example command line with new LLM model:
+> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --llm-model mistral-small-latest
 
 ---
 ## Advanced Notes
@@ -72,14 +86,23 @@ This project leverages [Mistral OCR](https://mistral.ai/news/mistral-ocr) for Op
 
 ### Notes on LLM
 
-This project leverages Mistral LLMs. I compared "mistral-small-latest" and "ministral-3b-latest" LLM models, the former providing more consistent outputs. I used an LLM temperature of 0, to enforce a more deterministic output.
+This project leverages Mistral LLMs. I compared several LLM models:
+ - `ministral-3b-latest`: fast but not fully precise
+ - `ministral-8b-latest`: fast and precise (good compromise)
+ - `mistral-small-latest`: slow but more accurate (without a cleaning step)
+
+I used an LLM temperature of 0, to enforce a more deterministic output.
 
 
 ### Notes on LLM prompting
 
-I created a prompt template available in the following json file (`prompt_template.json`), to extract specific medication information (medication name, and medication administration).
+I created prompt templates available in the following json file (`prompt_template.json`), to extract specific medication information (medication name, and medication administration).
 
-This prompt provides clear and concise instructions: defining a specific task, adding context as a variable (i.e. data from PDF document), and asking for a JSON object as output format.
+The prompts provide clear and concise instructions: defining a specific task, adding context as a variable (i.e. data from PDF document), and asking for a JSON object as output format.
+
+Prompt examples:
+ - `prompt_context`: prompt allowing additional context information (as variable)
+ - `prompt_doc`: prompt used when directly uploading a document (use of `direct-qna` option)
 
 In addition, I used specific pydantic models to define a clear JSON schema. It helps ensure the LLM model provides consistent structured responses (following this custom JSON structure). In that regard, I used the `client.chat.parse` function from Mistral AI (instead of the more general `client.chat.complete` function).
 
@@ -96,5 +119,6 @@ From the openFDA website: "Drug manufacturers and distributors submit documentat
 
 As a general note, we aim to extract medication from medical PDF reports. However, medication information can be found multiple times in these documents (e.g. general medication, medication from patient history, medication administered during hospital stay, and medication at discharge). I focused on the latter two components (medication administered, and medication at discharge) to be more specific in my data extraction task.
 
-As a more specific note, `medication administration instructions`, combine both `medication dosage` and `medication frequency`. They are defined as two independent items in medical reports. It would be easier for an LLM to extract these items separately, and output them as distinct JSON keys, than combining them into one single variable. 
-As it makes it more challenging for LLMs to follow such directions, I noticed variations in such outputs, either based on various document reports, or based on LLM models being used. This specific data extraction could potentially be done in two stages (extracting both 'dosage' and 'frequency', and then combining them as a post-processing step, if the output needs to be a single JSON variable).
+As a more specific note, `medication administration instructions`, combines both `medication dosage` and `medication frequency`. They are defined as two independent items in medical reports.
+It is not easy for an LLM to extract these items and combine them directly into one single variable. I noticed variations in such outputs, either based on various document reports, or based on LLM models being used.
+An easier workflow uses a two-step process (extracting both 'dosage' and 'frequency', and then combining them in a post-processing step, if the output needs to be a single JSON variable).
