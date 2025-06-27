@@ -24,7 +24,7 @@ def main(
         bool, typer.Option(help="Direct Question & Answer - OCR + LLM")
     ] = False,
     ocr_model: str = typer.Option("mistral-ocr-latest", "--ocr-model"),
-    text_model: str = typer.Option("mistral-small-latest", "--text-model"),
+    text_model: str = typer.Option("ministral-8b-latest", "--text-model"),
 ):
     """Main command"""
     logging.basicConfig(level=logging.INFO)
