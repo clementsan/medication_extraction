@@ -27,12 +27,14 @@ class MedicalDataExtractor:
         input_pdf: str,
         output_dir: str,
         qc_ocr: bool,
+        direct_qna: bool,
         ocr_model: str,
         text_model: str,
     ):
         self.input_pdf = input_pdf
         self.output_dir = output_dir
         self.qc_ocr = qc_ocr
+        self.direct_qna = direct_qna
         self.ocr_model = ocr_model
         self.text_model = text_model
         self.client = self.define_mistral_client()
@@ -78,6 +80,14 @@ class MedicalDataExtractor:
         )
         return medication_json
 
+    def doc_qna(self) -> Dict[str, Any]:
+        """Direct document Question & Answer - OCR + LLM combined"""
+        logger.info("Stage 1 & 2 - OCR + LLM data extraction")
+        medication_json = extraction.llm_qna(
+            self.text_model, self.client, self.input_pdf
+        )
+        return medication_json
+
     @staticmethod
     def validate_data(medication_json: Dict[str, Any]) -> Dict[str, Any]:
         """Validate extracted data using OpenFDA API"""
@@ -104,15 +114,18 @@ class MedicalDataExtractor:
         print("MEDICAL DATA EXTRACTION")
         print("----------")
 
-        # Stage 1 - Perform OCR on PDF file
-        pdf_content = self.perform_ocr()
+        if self.direct_qna:
+            medication_json = self.doc_qna()
+        else:
+            # Stage 1 - Perform OCR on PDF file
+            pdf_content = self.perform_ocr()
 
-        # Optional - Save OCR output file
-        if self.qc_ocr:
-            self.save_ocr_output(pdf_content)
+            # Optional - Save OCR output file
+            if self.qc_ocr:
+                self.save_ocr_output(pdf_content)
 
-        # Stage 2 - Data extraction
-        medication_json = self.extract_data(pdf_content)
+            # Stage 2 - Data extraction
+            medication_json = self.extract_data(pdf_content)
 
         # Stage 3 - Data validation
         medication_json_valid = self.validate_data(medication_json)
