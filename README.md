@@ -51,7 +51,7 @@ Example via poetry:
 **WARNING:** `MISTRAL_API_KEY` needs to be set in your environment, in order to run Mistal OCR and LLM models.
 
 Application arguments:
- - `input_pdf`: PDF file with medical information
+ - `input-pdf`: PDF file with medical information
  - `output-dir`: Output folder (where JSON and Markdown files are saved)
 
 Application options:
@@ -62,19 +62,13 @@ Application options:
 
 
 Example command line via python file:
-> python src/medication_extraction/main.py --input_pdf <pdf_file> --output-dir <output_dir>
+> python src/medication_extraction/main.py --input-pdf <pdf_file> --output-dir <output_dir>
 
 Example command line after local installation:
-> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir>
+> medication-extraction --input-pdf <pdf_file> --output-dir <output_dir>
 
-Example command line with quality control on OCR (saving OCR output file):
-> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --qc-ocr
-
-Example command line with direct Question&Answer (OCR + LLM combined):
-> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --direct-qna
-
-Example command line with new LLM model:
-> medication-extraction --input_pdf <pdf_file> --output-dir <output_dir> --llm-model mistral-small-latest
+Example command line with options:
+> medication-extraction --input-pdf <pdf_file> --output-dir <output_dir> --qc-ocr --llm-model mistral-small-latest
 
 ---
 ## Advanced Notes

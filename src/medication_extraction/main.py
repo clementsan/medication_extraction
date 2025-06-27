@@ -15,16 +15,20 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    input_pdf: str = typer.Option(..., "--input_pdf"),
-    output_dir: str = typer.Option(..., "--output-dir"),
+    input_pdf: str = typer.Option(..., "--input-pdf", help="Input PDF file"),
+    output_dir: str = typer.Option(..., "--output-dir", help="Output folder"),
     qc_ocr: Annotated[
-        bool, typer.Option(help="Quality Control - save OCR output")
+        bool, typer.Option(help="Quality Control - save OCR output file")
     ] = False,
     direct_qna: Annotated[
-        bool, typer.Option(help="Direct Question & Answer - OCR + LLM")
+        bool, typer.Option(help="Direct Question & Answer - OCR + LLM combined")
     ] = False,
-    ocr_model: str = typer.Option("mistral-ocr-latest", "--ocr-model"),
-    text_model: str = typer.Option("ministral-8b-latest", "--text-model"),
+    ocr_model: str = typer.Option(
+        "mistral-ocr-latest", "--ocr-model", help="OCR model"
+    ),
+    text_model: str = typer.Option(
+        "ministral-8b-latest", "--text-model", help="LLM model"
+    ),
 ):
     """Main command"""
     logging.basicConfig(level=logging.INFO)
