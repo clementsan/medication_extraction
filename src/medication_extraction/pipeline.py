@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import logging
 from typing import Tuple, Any, Dict
+from dataclasses import dataclass
 
 from mistralai import Mistral
 
@@ -19,24 +20,25 @@ from medication_extraction import validation
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class ExtractorConfig:
+    """Configuration for the MedicalDataExtractor."""
+    input_pdf: str
+    output_dir: str
+    qc_ocr: bool
+    direct_qna: bool
+    ocr_model: str
+    text_model: str
+
+
 class MedicalDataExtractor:
     """Medical data extractor class"""
 
     def __init__(
         self,
-        input_pdf: str,
-        output_dir: str,
-        qc_ocr: bool,
-        direct_qna: bool,
-        ocr_model: str,
-        text_model: str,
+        config: ExtractorConfig,
     ):
-        self.input_pdf = input_pdf
-        self.output_dir = output_dir
-        self.qc_ocr = qc_ocr
-        self.direct_qna = direct_qna
-        self.ocr_model = ocr_model
-        self.text_model = text_model
+        self.config = config
         self.client = self.define_mistral_client()
         self.output_ocr_file, self.output_json_file, self.output_md_file = (
             self.define_output_files()
@@ -53,9 +55,9 @@ class MedicalDataExtractor:
 
     def define_output_files(self) -> Tuple[str, str, str]:
         """Define output files (*ocr.md, *medication.json, *medication.md)"""
-        base_name = Path(self.input_pdf).stem
-        os.makedirs(self.output_dir, exist_ok=True)
-        output_path = Path(self.output_dir).absolute()
+        base_name = Path(self.config.input_pdf).stem
+        os.makedirs(self.config.output_dir, exist_ok=True)
+        output_path = Path(self.config.output_dir).absolute()
         output_ocr_file = os.path.join(output_path, f"{base_name}_ocr.md")
         output_json_file = os.path.join(output_path, f"{base_name}_medication.json")
         output_md_file = os.path.join(output_path, f"{base_name}_medication.md")
@@ -64,7 +66,7 @@ class MedicalDataExtractor:
     def perform_ocr(self) -> str:
         """Perform OCR on the PDF file"""
         logger.info("Stage 1 - Performing OCR on PDF file")
-        pdf_content = ocr.ocr_processor(self.input_pdf, self.client, self.ocr_model)
+        pdf_content = ocr.ocr_processor(self.config.input_pdf, self.client, self.config.ocr_model)
         return pdf_content
 
     def save_ocr_output(self, pdf_content: str):
@@ -76,7 +78,7 @@ class MedicalDataExtractor:
         """Extract data using LLM model"""
         logger.info("Stage 2 - Data extraction via LLM")
         medication_json = extraction.llm_extraction(
-            self.text_model, self.client, pdf_content
+            self.config.text_model, self.client, pdf_content
         )
         logger.info("\t Cleaning LLM JSON output")
         medication_json = schema.clean_json(medication_json)
@@ -86,7 +88,7 @@ class MedicalDataExtractor:
         """Direct document Question & Answer - OCR + LLM combined"""
         logger.info("Stage 1 & 2 - OCR + LLM data extraction")
         medication_json = extraction.llm_qna(
-            self.text_model, self.client, self.input_pdf
+            self.config.text_model, self.client, self.config.input_pdf
         )
         logger.info("\t Cleaning LLM JSON output")
         medication_json = schema.clean_json(medication_json)
@@ -118,14 +120,14 @@ class MedicalDataExtractor:
         print("MEDICAL DATA EXTRACTION")
         print("----------")
 
-        if self.direct_qna:
+        if self.config.direct_qna:
             medication_json = self.doc_qna()
         else:
             # Stage 1 - Perform OCR on PDF file
             pdf_content = self.perform_ocr()
 
             # Optional - Save OCR output file
-            if self.qc_ocr:
+            if self.config.qc_ocr:
                 self.save_ocr_output(pdf_content)
 
             # Stage 2 - Data extraction

@@ -21,7 +21,10 @@ def openfda_query(medication_name: str) -> bool:
     """
 
     # OpenFDA API query
-    api_query = f'https://api.fda.gov/drug/label.json?search=openfda.brand_name.exact="{medication_name}"&limit=1'
+    api_query = (
+        f'https://api.fda.gov/drug/label.json?search=openfda.brand_name.exact="'
+        f'{medication_name}"&limit=1'
+    )
     logger.debug("\t API query: %s", api_query)
 
     response = requests.get(api_query, timeout=5)
