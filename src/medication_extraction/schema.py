@@ -31,7 +31,7 @@ class MedicationItem(BaseModel):
     validated: str = "None"
     additional_information: dict = Field(
         description="Supplementary data about the medication, when available (e.g. route)",
-        examples=[{"route": "PO"}, {}],
+        examples=[{"route": "route"}, {}],
     )
 
 
