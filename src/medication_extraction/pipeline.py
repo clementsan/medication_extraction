@@ -78,6 +78,8 @@ class MedicalDataExtractor:
         medication_json = extraction.llm_extraction(
             self.text_model, self.client, pdf_content
         )
+        logger.info("\t Cleaning LLM JSON output")
+        medication_json = schema.clean_json(medication_json)
         return medication_json
 
     def doc_qna(self) -> Dict[str, Any]:
@@ -86,6 +88,8 @@ class MedicalDataExtractor:
         medication_json = extraction.llm_qna(
             self.text_model, self.client, self.input_pdf
         )
+        logger.info("\t Cleaning LLM JSON output")
+        medication_json = schema.clean_json(medication_json)
         return medication_json
 
     @staticmethod
