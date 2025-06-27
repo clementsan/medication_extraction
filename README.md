@@ -48,8 +48,9 @@ Example via poetry:
 ---
 ## Usage
 
-
 **WARNING:** "MISTRAL_API_KEY" needs to be set in your environment, in order to run Mistal OCR and LLM models.
+
+This application requires a PDF file as input, and generates 2 output files: a Markdown file and a JSON file.
 
 Example command line via python file:
 > python src/medication_extraction/main.py --input_pdf <pdf_file> --output-dir <output_dir>
