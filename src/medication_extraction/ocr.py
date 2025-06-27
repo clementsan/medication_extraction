@@ -2,25 +2,14 @@
 Optical Character Recognition
 """
 
-import os
-import base64
-
-
-def encode_pdf(pdf_file: str) -> bytes:
-    """Encode the pdf file to base64"""
-
-    if not os.path.exists(pdf_file):
-        raise Exception(f"File {pdf_file} not found!")
-
-    with open(pdf_file, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8")
+from medication_extraction import utils
 
 
 def ocr_processor(pdf_file: str, mistral_client: object, ocr_model: str) -> str:
     """OCR on PDF file"""
 
     # Getting the base64 string
-    base64_pdf = encode_pdf(pdf_file)
+    base64_pdf = utils.encode_pdf(pdf_file)
 
     ocr_response = mistral_client.ocr.process(
         model=ocr_model,
