@@ -13,9 +13,19 @@ class MedicationItem(BaseModel):
         description="Medication administered, medication at discharge",
         example="Medication",
     )
-    dosage: str = Field(
-        description="Dosage with frequency (no route)",
-        example="1mg daily",
+    # Combined administration instructions
+    # dosage: str = Field(
+    #     description="Dosage with frequency (no route)",
+    #     example="1mg daily",
+    # )
+    dosage: str = "None"
+    dosage_info: str = Field(
+        description="Dosage (no frequency, no route)",
+        example="1mg",
+    )
+    frequency_info: str = Field(
+        description="Frequency",
+        example="daily",
     )
     # Warning: define validated as string (to avoid LLM issues)
     validated: str = "None"
@@ -43,6 +53,15 @@ class MedicalReport(BaseModel):
     patient_info: PatientInfo
     medications: List[MedicationItem]
 
+
+def clean_json(json_object: Dict[str, Any]) -> str:
+    """Post-process JSON object (based on output requirements)"""
+    medication_list = json_object["medications"]
+    for _, item in enumerate(medication_list):
+        item["dosage"] = item["dosage_info"] + ' ' + item["frequency_info"]
+        item.pop("dosage_info", None)
+        item.pop("frequency_info", None)
+    return json_object
 
 def convert_json_to_md(json_object: Dict[str, Any]) -> str:
     """Convert json object to Markdown format"""
