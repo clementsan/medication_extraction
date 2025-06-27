@@ -4,6 +4,7 @@ Utility functions
 
 import os
 import json
+import base64
 import logging
 from typing import Any, Dict
 from dotenv import load_dotenv, find_dotenv
@@ -21,6 +22,16 @@ def retrieve_api(key_type: str) -> str:
     if not api_key:
         raise Exception(f"API key {key_type} not found!")
     return api_key
+
+
+def encode_pdf(pdf_file: str) -> str:
+    """Encode the pdf file to base64"""
+
+    if not os.path.exists(pdf_file):
+        raise Exception(f"File {pdf_file} not found!")
+
+    with open(pdf_file, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
 
 
 def read_markdown_file(input_path: str) -> str:
