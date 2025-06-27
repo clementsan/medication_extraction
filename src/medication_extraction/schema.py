@@ -14,7 +14,7 @@ class MedicationItem(BaseModel):
         example="Medication",
     )
     dosage: str = Field(
-        description="Dosage and frequency combined (no route)",
+        description="Dosage with frequency (no route)",
         example="1mg daily",
     )
     # Warning: define validated as string (to avoid LLM issues)
