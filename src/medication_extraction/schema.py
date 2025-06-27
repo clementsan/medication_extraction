@@ -10,7 +10,8 @@ class MedicationItem(BaseModel):
     """Medication item class"""
 
     medication: str = Field(
-        description="Medication administered, medication at discharge",
+        # description="Medication administered, medication at discharge",
+        description="Medication name",
         example="Medication",
     )
     # Combined administration instructions
