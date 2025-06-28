@@ -100,7 +100,7 @@ Prompt examples:
 
 In addition, I used specific pydantic models to define a clear JSON schema. It helps ensure the LLM model provides consistent structured responses (following this custom JSON structure). In that regard, I used the `client.chat.parse` function from Mistral AI (instead of the more general `client.chat.complete` function).
 
-
+Challenges appear based on the pydantic model being used. Updates of variable descriptions or examples result in different LLM outputs.
 
 ### Notes on external data validation
 
