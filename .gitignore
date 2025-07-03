@@ -163,7 +163,7 @@ cython_debug/
 
 # Data files -- Clem
 data_input/
-data_output/
+data_output*/
 data/
 
 # Mac files -- Clem
