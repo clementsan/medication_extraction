@@ -30,6 +30,7 @@ class MedicalDataExtractor:
         text_model: str,
         qc_ocr: bool = False,
         direct_qna: bool = False,
+        rag: bool = False,
     ):
         self.input_pdf = input_pdf
         self.output_dir = output_dir
@@ -37,6 +38,7 @@ class MedicalDataExtractor:
         self.text_model = text_model
         self.qc_ocr = qc_ocr
         self.direct_qna = direct_qna
+        self.rag = rag
         self.client = self.define_mistral_client()
         self.output_ocr_file, self.output_json_file, self.output_md_file = (
             self.define_output_files()
@@ -76,7 +78,7 @@ class MedicalDataExtractor:
         """Extract data using LLM model"""
         logger.info("Stage 2 - Data extraction via LLM")
         medication_json = extraction.llm_extraction(
-            self.text_model, self.client, pdf_content
+            self.text_model, self.client, pdf_content, self.rag
         )
         logger.info("\t Cleaning LLM JSON output")
         medication_json = schema.clean_json(medication_json)

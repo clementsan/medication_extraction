@@ -25,6 +25,9 @@ def main(
     direct_qna: Annotated[
         bool, typer.Option(help="Direct Question & Answer - OCR + LLM combined")
     ] = False,
+    rag: Annotated[
+        bool, typer.Option(help="Perform Retrieval Augmented Generation (RAG)")
+    ] = False,
 ):
     """Main command"""
     logging.basicConfig(level=logging.INFO)
@@ -35,6 +38,7 @@ def main(
         text_model=text_model,
         qc_ocr=qc_ocr,
         direct_qna=direct_qna,
+        rag=rag,
     )
     data_extractor.run_workflow()
 
