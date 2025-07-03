@@ -61,8 +61,6 @@ Application options:
  - `direct-qna`: Use direct Question&Answer step (OCR + LLM)
  - `rag`: Perform Information Retrieval (RAG) on document via similarity search
 
-Example command line via python file:
-> python src/medication_extraction/main.py --input-pdf <pdf_file> --output-dir <output_dir>
 
 Example command line after local installation:
 > medication-extraction --input-pdf <pdf_file> --output-dir <output_dir>
