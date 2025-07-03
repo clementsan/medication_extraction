@@ -4,6 +4,7 @@ Schema module - data schema
 
 from typing import List, Dict, Any
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class MedicationItem(BaseModel):
@@ -14,16 +15,11 @@ class MedicationItem(BaseModel):
         # description="Medication name",
         examples=["Medication", "Lisinopril"],
     )
-    # Combined administration instructions
-    # dosage: str = Field(
-    #     description="Dosage with frequency (no route)",
-    #     example="1mg daily",
-    # )
     dosage: str = "None"
     dosage_info: str = Field(
         description="Dosage (no frequency, no route)",
         # description="Dosage",
-        examples=["1mg", "10mg"],
+        examples=["1mg", "10 mg"],
     )
     frequency_info: str = Field(
         description="Frequency",
@@ -35,6 +31,31 @@ class MedicationItem(BaseModel):
         description="Supplementary data about the medication, when available (e.g. route)",
         examples=[{"route": "route"}, {}],
     )
+
+
+# New experiments
+# class MedicationItem(BaseModel):
+#     """Medication item class"""
+#
+#     medication: str = Field(
+#         description="Name of medication, name of medication administered, name of medication at discharge",
+#     )
+#     dosage: str = "None"
+#     dosage_info: str = Field(
+#         description="Dosage (no frequency, no route)",
+#         examples=["1mg"],
+#     )
+#     frequency_info: str = Field(
+#         description="Frequency",
+#         examples=["Daily"],
+#     )
+#     # Warning: define validated as string (to avoid LLM issues)
+#     validated: str = "None"
+#     additional_information: dict[str, str] = Field(
+#         description="Supplementary data about the medication, only when available (e.g. route, indication)",
+#         examples=[{"route": "route"}, {"indication": "indication"}, {}],
+#         default={},
+#     )
 
 
 class PatientInfo(BaseModel):

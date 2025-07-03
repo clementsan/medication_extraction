@@ -163,8 +163,11 @@ cython_debug/
 
 # Data files -- Clem
 data_input/
-data_output/
+data_output*/
 data/
+
+# Command Line scripts -- Clem
+CommandLine*.txt
 
 # Mac files -- Clem
 .DS_Store
