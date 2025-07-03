@@ -166,5 +166,8 @@ data_input/
 data_output*/
 data/
 
+# Command Line scripts -- Clem
+CommandLine*.txt
+
 # Mac files -- Clem
 .DS_Store
