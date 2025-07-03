@@ -3,3 +3,6 @@ python-dotenv
 requests
 typer
 pydantic
+langchain-core
+langchain-text-splitters
+langchain-mistralai
