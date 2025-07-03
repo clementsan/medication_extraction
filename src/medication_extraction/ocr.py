@@ -2,7 +2,7 @@
 Optical Character Recognition
 """
 
-from medication_extraction import utils
+from . import utils
 
 
 def ocr_processor(pdf_file: str, mistral_client: object, ocr_model: str) -> str:

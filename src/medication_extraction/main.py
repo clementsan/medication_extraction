@@ -7,7 +7,7 @@ import typer
 from typing_extensions import Annotated
 
 
-from medication_extraction import pipeline
+from . import pipeline
 
 
 app = typer.Typer()

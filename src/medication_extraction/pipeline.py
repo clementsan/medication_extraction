@@ -9,11 +9,11 @@ from typing import Tuple, Any, Dict
 
 from mistralai import Mistral
 
-from medication_extraction import extraction
-from medication_extraction import ocr
-from medication_extraction import schema
-from medication_extraction import utils
-from medication_extraction import validation
+from . import extraction
+from . import ocr
+from . import schema
+from . import utils
+from . import validation
 
 
 logger = logging.getLogger(__name__)

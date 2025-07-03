@@ -6,8 +6,8 @@ import os
 from pathlib import Path
 import pytest
 
-from medication_extraction import pipeline
-from medication_extraction import utils
+from src.medication_extraction import pipeline
+from src.medication_extraction import utils
 
 
 @pytest.fixture

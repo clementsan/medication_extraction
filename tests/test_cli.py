@@ -3,7 +3,7 @@ Testing module on CLI
 """
 
 from typer.testing import CliRunner
-from medication_extraction.main import app
+from src.medication_extraction.main import app
 
 
 runner = CliRunner()

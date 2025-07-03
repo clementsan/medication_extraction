@@ -11,8 +11,8 @@ from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_mistralai import MistralAIEmbeddings
 
-from medication_extraction import schema
-from medication_extraction import utils
+from . import schema
+from . import utils
 
 logger = logging.getLogger(__name__)
 
