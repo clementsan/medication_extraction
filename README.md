@@ -55,11 +55,11 @@ Application arguments:
  - `output-dir`: Output folder (where JSON and Markdown files are saved)
 
 Application options:
- - `qc-ocr`: Save OCR output in Markdown file 
- - `direct-qna`: Use direct Question&Answer step (OCR + LLM)
  - `ocr-model`: Select OCR model (Mistral OCR)
  - `text-model`: Select LLM text model (Mistral LLM models)
-
+ - `qc-ocr`: Save OCR output in Markdown file 
+ - `direct-qna`: Use direct Question&Answer step (OCR + LLM)
+ - `rag`: Perform Information Retrieval (RAG) on document via similarity search
 
 Example command line via python file:
 > python src/medication_extraction/main.py --input-pdf <pdf_file> --output-dir <output_dir>
@@ -68,7 +68,8 @@ Example command line after local installation:
 > medication-extraction --input-pdf <pdf_file> --output-dir <output_dir>
 
 Example command line with options:
-> medication-extraction --input-pdf <pdf_file> --output-dir <output_dir> --qc-ocr --llm-model mistral-small-latest
+> medication-extraction --input-pdf <pdf_file> --output-dir <output_dir> --llm-model mistral-small-latest --qc-ocr --rag
+
 
 ---
 ## Advanced Notes
@@ -83,7 +84,8 @@ This project leverages [Mistral OCR](https://mistral.ai/news/mistral-ocr) for Op
 This project leverages Mistral LLMs. I compared several LLM models:
  - `ministral-3b-latest`: fast but not fully precise
  - `ministral-8b-latest`: fast and precise (good compromise)
- - `mistral-small-latest`: slow but more accurate (without a cleaning step)
+ - `mistral-small-latest`: slower but more accurate (without a cleaning step)
+ - `mistral-medium-latest`: slower but can be more accurate based on pydantic schema
 
 I used an LLM temperature of 0, to enforce a more deterministic output.
 
