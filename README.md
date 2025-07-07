@@ -1,8 +1,12 @@
 # Project: Medication extraction from PDF reports
 
+[![](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+![example workflow](https://github.com/clementsan/medication_extraction/actions/workflows/ci_python.yml/badge.svg)
+
 **Aims:**
 This project aims to extract accurate medical information (e.g. medication with dosage) from PDF medical records. I opted for a workflow leveraging both OCR and LLM models.
-
 
 **Components:** 
  - Use of Command Line Interface (CLI) via Typer library
