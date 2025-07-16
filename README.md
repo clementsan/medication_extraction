@@ -85,8 +85,8 @@ This project leverages [Mistral OCR](https://mistral.ai/news/mistral-ocr) for Op
 
 This project leverages Mistral LLMs. I compared several LLM models:
  - `ministral-3b-latest`: fast but not fully precise
- - `ministral-8b-latest`: fast and precise (good compromise)
- - `mistral-small-latest`: slower but more accurate (without a cleaning step)
+ - `ministral-8b-latest`: fast but not always precise
+ - `mistral-small-latest`: slower but more accurate (default model)
  - `mistral-medium-latest`: slower but can be more accurate based on pydantic schema
 
 I used an LLM temperature of 0, to enforce a more deterministic output.
