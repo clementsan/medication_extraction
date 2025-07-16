@@ -6,6 +6,7 @@ import logging
 from typing import Any, Dict
 import requests
 
+from .phoenix_tracer import tracer
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ def openfda_query(medication_name: str) -> bool:
     return medication_name_valid
 
 
+@tracer.chain
 def validate_medication(json_object: Dict[str, Any]) -> Dict[str, Any]:
     """Medication name validation - via openFDA database"""
     medication_list = json_object["medications"]
