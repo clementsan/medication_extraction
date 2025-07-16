@@ -18,7 +18,7 @@ def main(
     input_pdf: Annotated[str, typer.Option(help="Input PDF file")],
     output_dir: Annotated[str, typer.Option(help="Output folder")],
     ocr_model: Annotated[str, typer.Option(help="OCR model")] = "mistral-ocr-latest",
-    text_model: Annotated[str, typer.Option(help="LLM model")] = "ministral-8b-latest",
+    text_model: Annotated[str, typer.Option(help="LLM model")] = "mistral-small-latest",
     qc_ocr: Annotated[
         bool, typer.Option(help="Quality Control - save OCR output file")
     ] = False,
