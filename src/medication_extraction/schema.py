@@ -28,7 +28,7 @@ class MedicationItem(BaseModel):
     # Warning: define validated as string (to avoid LLM issues)
     validated: str = "None"
     additional_information: dict = Field(
-        description="Supplementary data about the medication, when available (e.g. route)",
+        description="Supplementary data about the medication, only when available (e.g. route)",
         examples=[{"route": "route"}, {}],
     )
 
