@@ -20,7 +20,7 @@ def retrieve_api(key_type: str) -> str:
     _ = load_dotenv(find_dotenv())
     api_key = os.environ.get(key_type)
     if not api_key:
-        raise Exception(f"API key {key_type} not found!")
+        raise ValueError(f"API key {key_type} not found!")
     return api_key
 
 
@@ -28,7 +28,7 @@ def encode_pdf(pdf_file: str) -> str:
     """Encode the pdf file to base64"""
 
     if not os.path.exists(pdf_file):
-        raise Exception(f"File {pdf_file} not found!")
+        raise FileNotFoundError(f"File {pdf_file} not found!")
 
     with open(pdf_file, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
@@ -39,7 +39,7 @@ def read_markdown_file(input_path: str) -> str:
     logger.debug("\t Reading markdown file...")
 
     if not os.path.exists(input_path):
-        raise Exception(f"File {input_path} not found!")
+        raise FileNotFoundError(f"File {input_path} not found!")
 
     with open(input_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -59,7 +59,7 @@ def read_json_file(input_path: str):
     logger.debug("\t Reading json file...")
 
     if not os.path.exists(input_path):
-        raise Exception(f"File {input_path} not found!")
+        raise FileNotFoundError(f"File {input_path} not found!")
 
     with open(input_path, "r", encoding="utf-8") as f:
         content = json.load(f)
