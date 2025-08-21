@@ -13,6 +13,8 @@ from langchain_mistralai import MistralAIEmbeddings
 
 from . import schema
 from . import utils
+from .phoenix_tracer import tracer
+
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +42,7 @@ def retrieve_llm_prompt(prompt_type: str) -> str:
     return prompt_template
 
 
+@tracer.chain
 def doc_retrieval(pdf_content: str, query) -> str:
     """
     Perform doc retrieval using mistral embedding and chromadb vector database
@@ -76,6 +79,7 @@ def doc_retrieval(pdf_content: str, query) -> str:
     return retrieved_results
 
 
+@tracer.chain
 def llm_extraction(
     text_model: str, mistral_client: object, pdf_content: str, rag: bool = False
 ) -> Dict[str, Any]:
@@ -125,6 +129,7 @@ def llm_extraction(
     return json_response
 
 
+@tracer.chain
 def llm_qna(text_model: str, mistral_client: object, pdf_file: str) -> Dict[str, Any]:
     """
     Direct document Question & Answer - OCR + LLM combined

@@ -8,15 +8,33 @@ import logging
 from typing import Tuple, Any, Dict
 
 from mistralai import Mistral
+from pydantic_settings import BaseSettings
+from pydantic import Field
+from opentelemetry.trace import Status, StatusCode
 
 from . import extraction
 from . import ocr
 from . import schema
 from . import utils
 from . import validation
+from .phoenix_tracer import tracer
 
 
+# Logger
 logger = logging.getLogger(__name__)
+
+
+# Pydantic setting (reading .env file)
+class Settings(BaseSettings):
+    """Application configuration settings"""
+
+    mistral_api_key: str = Field(alias="MISTRAL_API_KEY")
+    openai_api_key: str = Field(alias="OPENAI_API_KEY", default="None")
+
+    phoenix_api_key: str = Field(alias="PHOENIX_API_KEY")
+    phoenix_collector_endpoint: str = Field(alias="PHOENIX_COLLECTOR_ENDPOINT")
+
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 class MedicalDataExtractor:
@@ -32,6 +50,7 @@ class MedicalDataExtractor:
         direct_qna: bool = False,
         rag: bool = False,
     ):
+        """Initialize class"""
         self.input_pdf = input_pdf
         self.output_dir = output_dir
         self.ocr_model = ocr_model
@@ -39,21 +58,21 @@ class MedicalDataExtractor:
         self.qc_ocr = qc_ocr
         self.direct_qna = direct_qna
         self.rag = rag
-        self.client = self.define_mistral_client()
+        self.settings = Settings()
+        self.client = self._initialize_mistral_client()
         self.output_ocr_file, self.output_json_file, self.output_md_file = (
-            self.define_output_files()
+            self._initialize_output_files()
         )
 
-    @staticmethod
-    def define_mistral_client() -> object:
+    def _initialize_mistral_client(self) -> object:
         """Initialize mistral client api"""
         # Retrieve API key
-        mistral_api_key = utils.retrieve_api("MISTRAL_API_KEY")
+        # mistral_api_key = utils.retrieve_api("MISTRAL_API_KEY")
         # Define Mistral client
-        client = Mistral(api_key=mistral_api_key)
+        client = Mistral(api_key=self.settings.mistral_api_key)
         return client
 
-    def define_output_files(self) -> Tuple[str, str, str]:
+    def _initialize_output_files(self) -> Tuple[str, str, str]:
         """Define output files (*ocr.md, *medication.json, *medication.md)"""
         base_name = Path(self.input_pdf).stem
         os.makedirs(self.output_dir, exist_ok=True)
@@ -120,21 +139,43 @@ class MedicalDataExtractor:
         print("MEDICAL DATA EXTRACTION")
         print("----------")
 
+        # Create Phoenix span
+        span_name = "Main_workflow"
+        if self.rag:
+            span_name += "_RAG"
         if self.direct_qna:
-            medication_json = self.doc_qna()
-        else:
-            # Stage 1 - Perform OCR on PDF file
-            pdf_content = self.perform_ocr()
+            span_name += "_DirectQ&A"
 
-            # Optional - Save OCR output file
-            if self.qc_ocr:
-                self.save_ocr_output(pdf_content)
+        with tracer.start_as_current_span(
+            span_name, openinference_span_kind="chain"
+        ) as span:
+            span_input_value = {
+                "input_pdf": self.input_pdf,
+                "ocr_model": self.ocr_model,
+                "llm_model": self.text_model,
+                "rag": self.rag,
+                "direct_qna": self.direct_qna,
+            }
+            span.set_input(value=span_input_value)
 
-            # Stage 2 - Data extraction
-            medication_json = self.extract_data(pdf_content)
+            if self.direct_qna:
+                medication_json = self.doc_qna()
+            else:
+                # Stage 1 - Perform OCR on PDF file
+                pdf_content = self.perform_ocr()
 
-        # Stage 3 - Data validation
-        medication_json_valid = self.validate_data(medication_json)
+                # Optional - Save OCR output file
+                if self.qc_ocr:
+                    self.save_ocr_output(pdf_content)
 
-        # Stage 4 - Save output files
-        self.save_output_files(medication_json_valid)
+                # Stage 2 - Data extraction
+                medication_json = self.extract_data(pdf_content)
+
+            # Stage 3 - Data validation
+            medication_json_valid = self.validate_data(medication_json)
+            span.set_output(value=medication_json_valid)
+
+            # Stage 4 - Save output files
+            self.save_output_files(medication_json_valid)
+
+            span.set_status(Status(StatusCode.OK))

@@ -3,8 +3,10 @@ Optical Character Recognition
 """
 
 from . import utils
+from .phoenix_tracer import tracer
 
 
+@tracer.chain
 def ocr_processor(pdf_file: str, mistral_client: object, ocr_model: str) -> str:
     """OCR on PDF file"""
 
