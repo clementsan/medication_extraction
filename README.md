@@ -12,7 +12,7 @@ This project aims to extract accurate medical information (e.g. medication with 
  - Use of Command Line Interface (CLI) via Typer library
  - Use of Mistral OCR and LLM models for data extraction
  - Use of OpenFDA database for external data validation
-
+ - Use of Arize Phoenix for LLM tracing
 
 ---
 ### Data science pipeline
@@ -52,7 +52,12 @@ Example via poetry:
 ---
 ## Usage
 
-**WARNING:** `MISTRAL_API_KEY` needs to be set in your environment, in order to run Mistal OCR and LLM models.
+**WARNING:** Several variables needs to be set in your environment, in order to run Mistal OCR and LLM models.
+ - `MISTRAL_API_KEY`: API key for Mistral OCR and LLM models
+ - `PHOENIX_API_KEY`: API key for LLM tracing via Phoenix
+ - `PHOENIX_COLLECTOR_ENDPOINT`: Endpoint for LLM tracing via Phoenix (e.g. https://app.phoenix.arize.com/s/<username>/)
+
+
 
 Application arguments:
  - `input-pdf`: PDF file with medical information
@@ -71,6 +76,10 @@ Example command line after local installation:
 
 Example command line with options:
 > medication-extraction --input-pdf <pdf_file> --output-dir <output_dir> --llm-model mistral-small-latest --qc-ocr --rag
+
+LLM tracing via Phoenix:
+ - Go to the URL corresponding to the Phoenix collector endpoint
+Example:  https://app.phoenix.arize.com/s/<username>/
 
 
 ---
