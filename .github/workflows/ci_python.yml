@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      PHOENIX_API_KEY: ${{ secrets.PHOENIX_API_KEY }}
+      PHOENIX_COLLECTOR_ENDPOINT: ${{ secrets.PHOENIX_COLLECTOR_ENDPOINT }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
