@@ -28,11 +28,11 @@ logger = logging.getLogger(__name__)
 class Settings(BaseSettings):
     """Application configuration settings"""
 
-    mistral_api_key: str = Field(..., env="MISTRAL_API_KEY")
-    openai_api_key: str = Field(env="OPENAI_API_KEY")
+    mistral_api_key: str = Field(alias="MISTRAL_API_KEY")
+    openai_api_key: str = Field(alias="OPENAI_API_KEY", default="None")
 
-    phoenix_api_key: str = Field(..., env="PHOENIX_API_KEY")
-    phoenix_collector_endpoint: str = Field(..., env="PHOENIX_COLLECTOR_ENDPOINT")
+    phoenix_api_key: str = Field(alias="PHOENIX_API_KEY")
+    phoenix_collector_endpoint: str = Field(alias="PHOENIX_COLLECTOR_ENDPOINT")
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
